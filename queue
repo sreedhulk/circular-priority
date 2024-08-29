@@ -1,0 +1,151 @@
+#include <stdio.h>
+
+// Structure to represent a queue element
+typedef struct {
+    int data;
+    int priority;
+} QueueElement;
+
+// Circular Queue implementation
+#define MAX_SIZE 5
+int circularQueue[MAX_SIZE];
+int front = -1, rear = -1;
+
+// Function to insert an element into the circular queue
+void insertCircularQueue(int data) {
+    if ((rear + 1) % MAX_SIZE == front) {
+        printf("Circular queue is full\n");
+        return;
+    }
+    if (front == -1) {
+        front = rear = 0;
+    } else {
+        rear = (rear + 1) % MAX_SIZE;
+    }
+    circularQueue[rear] = data;
+}
+
+// Function to delete an element from the circular queue
+void deleteCircularQueue() {
+    if (front == -1) {
+        printf("Circular queue is empty\n");
+        return;
+    }
+    if (front == rear) {
+        front = rear = -1;
+    } else {
+        front = (front + 1) % MAX_SIZE;
+    }
+}
+
+// Function to display the circular queue
+void displayCircularQueue() {
+    if (front == -1) {
+        printf("Circular queue is empty\n");
+        return;
+    }
+    int i = front;
+    while (i != rear) {
+        printf("%d ", circularQueue[i]);
+        i = (i + 1) % MAX_SIZE;
+    }
+    printf("%d\n", circularQueue[rear]);
+}
+
+// Priority Queue implementation
+#define MAX_PRIORITY_SIZE 5
+QueueElement priorityQueue[MAX_PRIORITY_SIZE];
+int priorityFront = -1, priorityRear = -1;
+
+// Function to insert an element into the priority queue
+void insertPriorityQueue(int data, int priority) {
+    if (priorityRear == MAX_PRIORITY_SIZE - 1) {
+        printf("Priority queue is full\n");
+        return;
+    }
+    if (priorityFront == -1) {
+        priorityFront = priorityRear = 0;
+    } else {
+        int i = priorityRear;
+        while (i >= priorityFront && priorityQueue[i].priority < priority) {
+            priorityQueue[i + 1] = priorityQueue[i];
+            i--;
+        }
+        priorityRear++;
+        priorityQueue[i + 1].data = data;
+        priorityQueue[i + 1].priority = priority;
+    }
+}
+
+// Function to delete an element from the priority queue
+void deletePriorityQueue() {
+    if (priorityFront == -1) {
+        printf("Priority queue is empty\n");
+        return;
+    }
+    if (priorityFront == priorityRear) {
+        priorityFront = priorityRear = -1;
+    } else {
+        priorityFront++;
+    }
+}
+
+// Function to display the priority queue
+void displayPriorityQueue() {
+    if (priorityFront == -1) {
+        printf("Priority queue is empty\n");
+        return;
+    }
+    for (int i = priorityFront; i <= priorityRear; i++) {
+        printf("Data: %d, Priority: %d\n", priorityQueue[i].data, priorityQueue[i].priority);
+    }
+}
+
+int main() {
+    int choice;
+    while (1) {
+        printf("Menu:\n");
+        printf("1. Insert into Circular Queue\n");
+        printf("2. Delete from Circular Queue\n");
+        printf("3. Display Circular Queue\n");
+        printf("4. Insert into Priority Queue\n");
+        printf("5. Delete from Priority Queue\n");
+        printf("6. Display Priority Queue\n");
+        printf("7. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+        switch (choice) {
+            case 1:
+                int data;
+                printf("Enter data to insert into circular queue: ");
+                scanf("%d", &data);
+                insertCircularQueue(data);
+                break;
+            case 2:
+                deleteCircularQueue();
+                break;
+            case 3:
+                displayCircularQueue();
+                break;
+            case 4:
+                int priorityData, priority;
+                printf("Enter data to insert into priority queue: ");
+                scanf("%d", &priorityData);
+                printf("Enter priority: ");
+                scanf("%d", &priority);
+                insertPriorityQueue(priorityData, priority);
+                break;
+            case 5:
+                deletePriorityQueue();
+                break;
+            case 6:
+                displayPriorityQueue();
+                break;
+            case 7:
+                exit(0);
+            default:
+                printf("Invalid choice\n");
+        }
+    }
+    return 0;
+}
